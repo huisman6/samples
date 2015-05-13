@@ -3,14 +3,10 @@ package com.youzhixu.sample.concurrent;
 import java.util.concurrent.CountDownLatch;
 
 /**
- * <p>
- *
- * </p>
- * 
- * @author liuhui
+ * @author huisman
  * @createAt 2015年5月12日 下午2:04:20
  * @since 1.0.0
- * @Copyright (c) 2015, Lianjia Group All Rights Reserved.
+ * @Copyright (c) 2015, youzhixu.com Group All Rights Reserved.
  */
 
 public class CountDownLatchSemo {
