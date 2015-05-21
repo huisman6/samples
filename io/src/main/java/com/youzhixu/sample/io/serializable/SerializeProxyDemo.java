@@ -16,10 +16,10 @@ import java.io.OutputStream;
 import java.io.Serializable;
 
 /**
- * @author liuhui
+ * @author huisman
  * @createAt 2015年5月21日 下午12:56:31
  * @since 1.0.0
- * @Copyright (c) 2015, Lianjia Group All Rights Reserved.
+ * @Copyright (c) 2015, youzhixu.com All Rights Reserved.
  */
 public class SerializeProxyDemo {
 	public static void main(String[] args) {
@@ -58,12 +58,13 @@ public class SerializeProxyDemo {
 
 
 /**
- * 1,Person和PersonProxy实现了序列化接口; <br>
- * 2，Person提供了一个的writeReplace方法，将序列化的对象指定为PersonProxy <br>
- * 3，PersonProxy是一个内部的私有静态类，因此其他类无法访问它。
- * 4，PersonProxy应该实现readResolve()方法，返回Person对象，这样当Person类被反序列化时，在内部其实是PersonProxy类被反序列化了，
- * 之后它的readResolve()方法被调用，我们得到了Person对象。<br>
- * 5，在Person类中实现readObject()方法，直接抛出InvalidObjectException异常，防止黑客通过伪造Person对象的流并对其进行解析，继而执行攻击。
+ * 1,ProtectedPerson和PersonProxy实现了序列化接口; <br>
+ * 2，ProtectedPerson提供了一个的writeReplace方法，将序列化的对象指定为PersonProxy <br>
+ * 3，PersonProxy是一个内部的私有静态类，因此其他类无法访问它。<br>
+ * 4，PersonProxy应该实现readResolve()方法，返回ProtectedPerson对象，这样当ProtectedPerson类被反序列化时，
+ * 在内部其实是PersonProxy类被反序列化了， 之后它的readResolve()方法被调用，我们得到了ProtectedPerson对象。<br>
+ * 5，在ProtectedPerson类中实现readObject()方法，直接抛出InvalidObjectException异常，
+ * 防止黑客通过伪造ProtectedPerson对象的流并对其进行解析，继而执行攻击。
  */
 class ProtectedPerson implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -92,8 +93,8 @@ class ProtectedPerson implements Serializable {
 
 	/**
 	 * 一个内部的私有静态类，因此其他类无法访问它。
-	 * DataProxy应该实现readResolve()方法，返回Data对象，这样当Data类被反序列化时，在内部其实是DataProxy类被反序列化了
-	 * ，之后它的readResolve()方法被调用，我们得到了Data对象。
+	 * PersonProxy应该实现readResolve()方法，返回ProtectedPerson对象，这样当ProtectedPerson类被反序列化时
+	 * ，在内部其实是PersonProxy类被反序列化了 ，之后它的readResolve()方法被调用，我们得到了ProtectedPerson对象。
 	 */
 	private static class PersonProxy implements Serializable {
 		private static final long serialVersionUID = 1L;

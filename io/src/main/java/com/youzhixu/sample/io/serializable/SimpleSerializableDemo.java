@@ -64,7 +64,6 @@ class Person implements Serializable {
 		this.sex = sex;
 	}
 
-
 	public Person() {
 		this.sex = "None";
 	}
