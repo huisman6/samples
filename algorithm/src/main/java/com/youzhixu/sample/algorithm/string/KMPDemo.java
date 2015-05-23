@@ -8,6 +8,6 @@ package com.youzhixu.sample.algorithm.string;
  */
 public class KMPDemo {
 	public static void main(String[] args) {
-
+		String str=new String("");
 	}
 }

@@ -51,7 +51,7 @@ public class ArrayBlockingQueueDemo {
 			}
 		});
 		try {
-			Thread.sleep(5);
+			Thread.sleep(200);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

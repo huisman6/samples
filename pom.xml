@@ -7,7 +7,7 @@
   
    <properties>
         <encoding>UTF-8</encoding>
-        <compile.version>1.7</compile.version>
+        <compile.version>1.8</compile.version>
 		<spring.version>4.1.2.RELEASE</spring.version>
 		<junit.version>4.12</junit.version>
 		<cglib.version>2.2.2</cglib.version>
