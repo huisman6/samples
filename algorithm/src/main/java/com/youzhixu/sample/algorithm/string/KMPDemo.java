@@ -1,5 +1,7 @@
 package com.youzhixu.sample.algorithm.string;
 
+import java.util.Arrays;
+
 /**
  * @author huiman
  * @createAt 2015年5月22日 上午9:01:54
@@ -8,14 +10,19 @@ package com.youzhixu.sample.algorithm.string;
  */
 public class KMPDemo {
 	public static void main(String[] args) {
-		simpleSearch("我", " 是一个猪什么");
-		simpleSearch("我们是 我", "  ");
-		simpleSearch("我是一个猪", "我是");
-		simpleSearch("我是一个猪我是一个猪吗", "我");
-		simpleSearch("我是一个猪个一猪", "一个");
-		simpleSearch("我是一个猪", "我猪");
-		simpleSearch("我是一个猪什么", "什么");
-		simpleSearch("我是一个猪什么", " ");
+		System.out.println("next==========>" + Arrays.toString(calculateNext("BCEB")));
+		String[] texts =
+				new String[] {"我", "我们是 我", "我是一个猪", "我是一个猪什么", "我是一个猪什么", "我是一个猪", "我是一个猪我是一个猪吗",
+						"我是一个猪个一猪"};
+
+		String[] patterns = new String[] {"我是", " ", "我是", "什么", "  ", "个已", "猪", "一个猪"};
+		long startAt = System.currentTimeMillis();
+		for (int i = 0; i < patterns.length; i++) {
+			kmpSearch(texts[i], patterns[i]);
+			// simpleSearch(texts[i], patterns[i]);
+		}
+		long endAt = System.currentTimeMillis();
+		System.out.println("耗时=======》" + (endAt - startAt));
 	}
 
 	private static void kmpSearch(String text, String pattern) {
@@ -36,7 +43,7 @@ public class KMPDemo {
 				i++;
 				j++;
 			} else {
-				// 遇到未匹配的字符 （j!=-1 && text.charAt(i) == pattern.charAt(j));
+				// 遇到未匹配的字符 （j!=-1 && text.charAt(i) != pattern.charAt(j));
 				// i不回退到（i-j),i值保持不变;
 				// 只是把模式字符串对应的索引j移动一定位置
 				j = nextArray[j];
@@ -107,6 +114,7 @@ public class KMPDemo {
 				// 说明匹配
 				System.out.println("found index=" + (i - j) + ",text=" + text + ",searched String:"
 						+ text.substring(i - j, i));
+				return;
 			} else {
 				// 没有匹配，i要回退到之前的位置，从下一个字符开始新的一轮
 				i = i - j;
