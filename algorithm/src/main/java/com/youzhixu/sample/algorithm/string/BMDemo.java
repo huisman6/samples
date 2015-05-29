@@ -20,6 +20,7 @@ public class BMDemo {
 
 		String[] patterns =
 				new String[] {"懂所发生的斯蒂发", "方的说法多少似", "我是官豆腐", "什么", "  ", "个已", "猪", "一个猪"};
+
 		long startAt = System.currentTimeMillis();
 		for (int i = 0; i < patterns.length; i++) {
 			// bmSearchWithoutGoodSuffix(texts[i], patterns[i]);
