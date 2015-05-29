@@ -19,6 +19,7 @@ public class KMPDemo {
 		long startAt = System.currentTimeMillis();
 		for (int i = 0; i < patterns.length; i++) {
 			kmpSearch(texts[i], patterns[i]);
+
 			// simpleSearch(texts[i], patterns[i]);
 		}
 		long endAt = System.currentTimeMillis();
