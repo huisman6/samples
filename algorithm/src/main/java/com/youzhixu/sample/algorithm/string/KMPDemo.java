@@ -50,7 +50,29 @@ public class KMPDemo {
 	}
 
 	private static int[] calculateNext(String pattern) {
-		return new int[] {0, 0, 0, 1};
+		int plen = pattern.length();
+		int[] nexts = new int[plen];
+		// 初始值
+		nexts[0] = -1;
+		int k = -1;
+		int j = 0;
+
+		while (j < plen - 1) {
+			// p[k]表示前缀，p[j]表示后缀
+			if (k == -1 || pattern.charAt(j) == pattern.charAt(k)) {
+				++j;
+				++k;
+				if (pattern.charAt(j) != pattern.charAt(k)) {
+					nexts[j] = k; //
+				} else {
+					// 因为不能出现p[j] = p[ next[j ]]，所以当出现时需要继续递归，k = next[k] = next[next[k]]
+					nexts[j] = nexts[k];
+				}
+			} else {
+				k = nexts[k];
+			}
+		}
+		return nexts;
 	}
 
 
