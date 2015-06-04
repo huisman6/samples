@@ -34,12 +34,13 @@ public class KRDemo {
 
 	/**
 	 * rehash 子串 rehash(a,b,h)= ((h-a*(2^m-1))*2+b) mod q <br>
-	 * 2^(m-1) 为某个字符的系数,h为当前的子串hash
+	 * 2^(m-1) 为前一个字串sub[0]的系数,h为当前的子串hash
 	 * 
 	 * @since: 1.0.0
 	 * @param firstChar 子串首字符
 	 * @param nextChar 子串下一个字符
-	 * @param powerOfN 2^(plen-1)
+	 * @param powerOfR 2^(plen-1)
+	 * @param prime 素数
 	 * @param currentSubHash 当前子串的hash值
 	 * @return 返回下一个子串的hash值
 	 */
