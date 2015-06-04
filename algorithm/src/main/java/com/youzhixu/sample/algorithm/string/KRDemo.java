@@ -43,11 +43,19 @@ public class KRDemo {
 	 * @param currentSubHash 当前子串的hash值
 	 * @return 返回下一个子串的hash值
 	 */
-	private static long rehash(char firstChar, char nextChar, int powerOfN,long prime, long currentSubHash) {
-		//类型提升 char转换为long 符号位扩展0,如果是其他类型，可以利用掩码防止符号位扩展
+	private static long rehash(char firstChar, char nextChar, int powerOfR,long prime, long currentSubHash) {
+		//类型提升 char转换为long 符号位扩展0,如果是其他类型，可以利用掩码防止符号位扩展,另外因为 +号比<<优先级高，所以前半部分要括起来
 		//((currentSubHash - firstChar * powerOfN) << 1 )+ nextChar&0xFFFFL
-		return (((currentSubHash - firstChar * powerOfN) << 1 )+ nextChar )%prime;
-		//另外(currentSubHash - firstChar * powerOfN) << 1 + nextChar 是错误的，因为<< 优先级没+号高
+		//return (((currentSubHash - firstChar * powerOfN) << 1 )+ nextChar )%prime;
+		
+		//取余，Hash(i+1)即Hash(i)的下一个子串
+		//Hash(i+1)% q  = (Hash(i) - text[i]*R^(m-1) ) *R+ text[i+m] ) % P
+		//              = (Hash(i)*R - text[i]*R^m + text[i+m] ) %  P
+		//				= (Hash(i)*R%P - text[i]*R^m%P +P + text[i+m] ) % P
+		// 这里+P主要是为了防止hash溢出
+		return ((currentSubHash<<1)%prime - ((firstChar * powerOfR) <<1)%prime +prime+ nextChar )%prime;
+		
+		
 	}
 
 	private static void krSearch(String text, String pattern) {
@@ -78,8 +86,19 @@ public class KRDemo {
 		// BigInteger prime = BigInteger.probablePrime(31, new Random());
         // return prime.longValue();
 		
-		// ∑ =m[i]*2^(i-1)....;
-		//hash(str[0..m-1])=(str[0]*2^(m-1)+str[1]*2^(m-2)+……+str[m-1]*2^0)mod q
+		
+		//hash(str[0..m-1])=(str[0]*2^(m-1)+str[1]*2^(m-2)+……+str[m-1]*2^0)mod P
+		
+		// 假设i=0 (i为文本字符串text的第i个字符)，m为模式串pattern字符的长度，R为进制=2,P为取余的素数。
+		// 则Hash(text[i,i+(m-1)])=text[0]*R^(m-1)+text[1]*R^(m-2)+……+text[m-1]*R^0
+	    //  	   =text[0]*2^(m-1)+text[1]*2^(m-2)+……+text[m-1]*2^0)
+		//则i的下一位[i+1,i+m]的字串的 Hash(text[i+1,i+m]= ( Hash(text[i,i+(m-1)]) - text[i]*R^(m-1) ) *R+ text[i+m]
+		//    =(Hash(text[0,i+(m-1)] - text[0]*R^(m-1) ) *2+ text[0+m]
+		// 即i+1处的子串可以由i处的字串直接结算得出（i处的字串Hash-i处子串的首字母*R^(m-1) ，再乘以进制R，最后加上i+1处字串尾字符）。
+		
+		//取余的特性
+		//(1) (a+b)%c = ((a%c)+(b%c))%c; 
+		//(2) (a*b)%c = ((a%c)*(b%c))%c;
 		for (int shift=plen-1,i=0; i <plen ; i++,shift--) {
 			hpattern += (pattern.charAt(i) << shift) %prime;
 			hsub += (text.charAt(i) << shift)%prime;
