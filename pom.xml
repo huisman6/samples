@@ -133,5 +133,6 @@
    	<module>concurrent</module>
    	<module>io</module>
    	<module>algorithm</module>
+   	<module>component</module>
    </modules>
 </project>
