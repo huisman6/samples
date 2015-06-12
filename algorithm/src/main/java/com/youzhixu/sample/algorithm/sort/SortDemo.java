@@ -19,7 +19,9 @@ public class SortDemo {
 		// bubleSort(data);
 		// bubbleSortV2(data);
 		// insertionSort(data);
-		insertionSortV2(data);
+		// insertionSortV2(data);
+		// shellSort(data);
+		shellSortV2(data);
 		System.out.println("after sort:" + Arrays.toString(data));
 	}
 
@@ -223,6 +225,90 @@ public class SortDemo {
 			}
 			// tmp插入到正确的位置
 			data[left] = tmp;
+		}
+		return data;
+	}
+
+
+	private static int[] shellSort(int data[]) {
+		int len = data.length;
+		// 步长（子序列的长度）
+		int step = len / 2;
+		// 步长每次都会按一定比率减小,step=1时就可以全部排序了。
+		int tmp;
+		for (step = len / 2; step > 0; step /= 2) {
+			// 现在将分组后的子序列分别插入排序
+			// 比如序列 data={1,3,-1,5,4}，步长为2,划分为=>
+			// {
+			// 1,3,
+			// -1,5
+			// 4
+			// ｝
+			// 即data可以分成两列（组）子序列｛1，-1,4｝和｛3，5｝
+
+			// 外循环i可以理解为有多少列（比如步长为2，意味着有2列，那么每列（组）分别进行插入排序）
+
+			// 一循环将一个子序列全部排好序，
+			// 循环第一趟，完成子序列｛1，-1,4｝的插入排序：｛-1，1，4｝
+			// 循环第而趟，完成子序列｛3，5｝的插入排序：｛3，5｝
+			for (int i = 0; i < step; i++) {
+
+				// 内循环为每列数据： data[j,j+step,j+step+step,....]的插入排序
+				for (int j = i + step; j < len; j += step) {
+					// 每个元素与自己列的数据进行直接插入排序
+					// data[j]为未排序的元素，data[j-step]为有序子序列的最后一个元素
+					if (data[j] < data[j - step]) {
+						tmp = data[j];
+						int k = j - step;
+						// 查找插入位置
+						while (k >= 0 && data[k] > tmp) {
+							data[k + step] = data[k];
+							k -= step;
+						}
+						// 插入到正确位置
+						data[k + step] = tmp;
+					}
+				}
+			}
+		}
+		return data;
+	}
+
+
+	private static int[] shellSortV2(int data[]) {
+		int len = data.length;
+		// 步长（子序列的长度）
+		int step = len / 2;
+		// 步长每次都会按一定比率减小,step=1时就可以全部排序了。
+		int tmp;
+		for (step = len / 2; step > 0; step /= 2) {
+			// 现在将分组后的子序列分别插入排序
+			// 比如序列 data={1,3,-1,5,4}，步长为2,划分为=>
+			// {1,3,
+			// -1,5
+			// 4
+			// ｝
+			// 即data可以分成两组子序列｛1，-1,4｝和｛3，5｝
+
+			// 从step处开始处理，总计循环次数=data.length-step=5-2=3
+
+			// 一轮循环插入一个子序列中未排序的元素，子序列交替插入排序
+
+			// 循环第一轮，子序列｛1，-1,4｝有序序列｛1｝与 -1插入排序，完成后，子序列为｛-1，1, 4｝
+			// 循环第二轮，子序列｛3，5｝有序序列｛3｝与5插入排序，完成后，子序列为｛3，5｝
+			// 循环第三轮，完成子序列｛1，-1,4｝有序序列｛-1，1｝与元素4插入排序，完成后，子序列为｛-1，1, 4｝
+
+			for (int i = step; i < len; i++) {
+
+				// j为已排序的子序列的最后一位，j+step=i=待排序的元素的位置
+				for (int j = i - step; j >= 0 && data[j] > data[j + step]; j -= step) {
+					// 通过swap交换将待排序元素data[i]交换到正确的位置
+					tmp = data[j];
+					data[j] = data[j + step];
+					data[j + step] = tmp;
+				}
+
+			}
 		}
 		return data;
 	}
