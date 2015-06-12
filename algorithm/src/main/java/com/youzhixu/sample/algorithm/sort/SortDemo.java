@@ -262,6 +262,7 @@ public class SortDemo {
 						int k = j - step;
 						// 查找插入位置
 						while (k >= 0 && data[k] > tmp) {
+							// 有序子序列中比它大的往右移
 							data[k + step] = data[k];
 							k -= step;
 						}
