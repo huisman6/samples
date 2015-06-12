@@ -7,7 +7,7 @@
   </parent>
   <artifactId>component</artifactId>
   <dependencies>
- 	 <dependency>
+ 	    <dependency>
 			<groupId>org.apache.activemq</groupId>
 			<artifactId>activemq-core</artifactId>
 			<version>5.7.0</version>
