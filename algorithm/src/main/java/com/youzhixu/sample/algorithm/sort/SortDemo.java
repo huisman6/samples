@@ -2,6 +2,8 @@ package com.youzhixu.sample.algorithm.sort;
 
 import java.util.Arrays;
 
+import com.sun.xml.internal.org.jvnet.fastinfoset.stax.LowLevelFastInfosetStreamWriter;
+
 /**
  * @author huisman
  * @createAt 2015年6月9日 上午8:39:00
@@ -12,7 +14,8 @@ import java.util.Arrays;
 public class SortDemo {
 
 	public static void main(String[] args) {
-		int[] data = new int[] {-1, 3, 5, 1, 0, -3};
+		// int[] data = new int[] {-1, 3, 5, 1, 0, -3};
+		int[] data = new int[] {1, 5, 7, 1, -3};
 		System.out.println("before sort:" + Arrays.toString(data));
 		// simpleSelectionSort(data);
 		// simpleSelectionSortV2(data);
@@ -21,7 +24,9 @@ public class SortDemo {
 		// insertionSort(data);
 		// insertionSortV2(data);
 		// shellSort(data);
-		shellSortV2(data);
+		// shellSortV2(data);
+//		quickSort(data);
+		quickSortV2(data, 0, data.length-1);
 		System.out.println("after sort:" + Arrays.toString(data));
 	}
 
@@ -233,7 +238,7 @@ public class SortDemo {
 	private static int[] shellSort(int data[]) {
 		int len = data.length;
 		// 步长（子序列的长度）
-		int step = len / 2;
+		int step;
 		// 步长每次都会按一定比率减小,step=1时就可以全部排序了。
 		int tmp;
 		for (step = len / 2; step > 0; step /= 2) {
@@ -279,7 +284,7 @@ public class SortDemo {
 	private static int[] shellSortV2(int data[]) {
 		int len = data.length;
 		// 步长（子序列的长度）
-		int step = len / 2;
+		int step;
 		// 步长每次都会按一定比率减小,step=1时就可以全部排序了。
 		int tmp;
 		for (step = len / 2; step > 0; step /= 2) {
@@ -313,4 +318,126 @@ public class SortDemo {
 		}
 		return data;
 	}
+
+	private static int[] quickSort(int data[]) {
+		int len = data.length;
+		quickSort(data, 0, len - 1);
+		return data;
+	}
+	
+	private static void quickSort(int data[], int fromIndex, int endIndex) {
+		if (fromIndex < endIndex) {
+			//找到基准元素在序列中的位置
+			int pivot=partition(data, fromIndex, endIndex);
+			System.out.println("fromIndex="+fromIndex+",endIndex="+endIndex
+                          +",pivotIndex="+pivot+","+Arrays.toString(data));
+
+			//依据基准元素将序列划分成两个子序列，如此递归调用，出口是fromIndex=endIndex，说明全排好序了
+			quickSort(data, fromIndex,pivot-1);
+			quickSort(data, pivot+1,endIndex);
+
+		}
+	}
+	private static void quickSortV2(int data[], int fromIndex, int endIndex) {
+		while (fromIndex < endIndex) {
+			// 找到基准元素
+			int pivot = partitionV2(data, fromIndex, endIndex);
+			System.out.println("fromIndex=" + fromIndex + ",endIndex=" + endIndex + ",pivotIndex="
+					+ pivot + "," + Arrays.toString(data));
+			quickSort(data, fromIndex, pivot - 1);
+			//将第二部分的递归转换为循环
+			fromIndex=pivot+1;
+			//quickSort(data, pivot + 1, endIndex);
+		}
+	}
+
+	private static int partition(int[] data, int left, int right) {
+		// 子序列为data[right,left]，参照pivot进行分区后的子序列【左 <- pivot - > 右】
+		// 从右向左扫描data，将比pivot小的交换到左边。
+		// 同时从左向右扫描data，将pivot大的交换到右边
+
+		// 我们选择data[left]为基准元素,也可以选择最后一个元素data[right]，或者随机选择。
+
+		int pivot = data[left];
+		int high = right;
+		int low = left;
+		int tmp;
+		// 最终low =high时，data[low]=data[high]=pivot
+		while (low < high) {
+			while (low < high && data[high] >= pivot) {
+				// 从右向左扫描data，找到比基准小的元素，说明>=high位置的元素都比基准大了，不用换到左边去；
+				// 如果小，则交换到左边去
+				high--;
+			}
+			// 此时high已经是<=pivot的元素，交换data[low]和data[high]
+			tmp = data[high];
+			data[high] = data[low];
+			data[low] = tmp;
+
+			while (low < high && data[low] <= pivot) {
+				// 从左向右扫描data，找到比基准大的元素，说明 <=low位置的元素都被基准小了，不用换到右边去；
+				// 如果大，则交换到右边去
+				low++;
+			}
+
+			// 此时low已经是 >=pivot的元素，交换data[low]和data[high]
+			tmp = data[low];
+			data[low] = data[high];
+			data[high] = tmp;
+
+			// 也意味着[left,low]是小于pivot的
+			// [hight,right]这个子序列是大于pivot的。
+		}
+		System.out.println("low=" + low + ",high=" + high);
+		return low;
+	}
+
+
+	private static int partitionV2(int[] data, int left, int right) {
+		// 子序列为data[right,left]，参照pivot进行分区后的子序列【左 <- pivot - > 右】
+		// 从右向左扫描data，将比pivot小的交换到左边。
+		// 同时从左向右扫描data，将pivot大的交换到右边
+
+		// 我们选择data[left]为基准元素,也可以选择最后一个元素data[right]，或者随机选择。
+
+		// 采用替换，而不是交换，将元素分布到pivot两端
+		int pivot = data[left];
+
+		int high = right;
+		int low = left;
+		// 最终low =high时，data[low]=data[high]=pivot
+		while (low < high) {
+			while (low < high && data[high] >= pivot) {
+				// 从右向左扫描data，找到比基准小的元素；
+				high--;
+			}
+			// 找到元素比pivot小的元素了
+			if (low < high) {
+				// 把data[high]替换到左边来
+				data[low] = data[high];
+				// 说明data[low]的位置已经被占用，low向右移动
+				// data[low]代表的是大于pivot的数，data[high]代表的小于pivot的数。
+				// 替换之后此时low位置的数肯定小于pivot，所以low向右移动
+				low++;
+			}
+
+			while (low < high && data[low] < pivot) {
+				// 从左向右扫描data，找到比基准大的元素；
+				low++;
+			}
+			// 找到元素比pivot大的元素了
+			if (low < high) {
+				// 把data[high]换到右边来
+				data[high] = data[low];
+				// 说明data[high]的位置已经被占用，high向左移动
+				// data[high]代表的小于pivot的数，data[low]代表的是大于pivot的数。
+				// 替换之后此时high位置的数肯定大于pivot，所以high向左移动
+				high--;
+			}
+		}
+		// 此时low=high,即pivot的位置
+		data[low] = pivot;
+		return low;
+	}
+
 }
