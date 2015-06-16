@@ -2,7 +2,6 @@ package com.youzhixu.sample.algorithm.sort;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -16,8 +15,8 @@ import java.util.List;
 public class SortDemo {
 
 	public static void main(String[] args) {
-		// int[] data = new int[] {-1, 3, 5, 1, 0, -3};
-		int[] data = new int[] {1, 5, 7, 1, 5,59};
+		int[] data = new int[] {-1, 3, 5, 1, 0, -3, 55, 33, 56, -85, 36};
+		// int[] data = new int[] {1, 5, 7, 1, -3};
 		System.out.println("before sort:" + Arrays.toString(data));
 		// simpleSelectionSort(data);
 		// simpleSelectionSortV2(data);
@@ -28,11 +27,12 @@ public class SortDemo {
 		// shellSort(data);
 		// shellSortV2(data);
 		// quickSort(data);
-//		quickSortV2(data, 0, data.length - 1);
-//		mergeSort(data);
-		
-//		bucketSort(data, 3);
-		radixSort(data);
+		// quickSortV2(data, 0, data.length - 1);
+		// mergeSort(data);
+
+		// bucketSort(data, 3);
+		// radixSort(data);
+		heapSort(data);
 		System.out.println("after sort:" + Arrays.toString(data));
 	}
 
@@ -448,20 +448,20 @@ public class SortDemo {
 	}
 
 	private static int[] mergeSort(int[] data) {
-		int[] tmpArray=new int[data.length];
-		mergeSort(data, 0, data.length-1, tmpArray);
+		int[] tmpArray = new int[data.length];
+		mergeSort(data, 0, data.length - 1, tmpArray);
 		return data;
 	}
 
 	private static void mergeSort(int[] data, int fromIndex, int endIndex, int tmpArray[]) {
 		if (fromIndex < endIndex) {
-			//递归划分成两个数组，并合并（两路归并递归算法）
+			// 递归划分成两个数组，并合并（两路归并递归算法）
 			int middle = (fromIndex + endIndex) / 2;
-			 // 左边有序
+			// 左边有序
 			mergeSort(data, fromIndex, middle, tmpArray);
-			 // 右边有序
+			// 右边有序
 			mergeSort(data, middle + 1, endIndex, tmpArray);
-			 // 再将二个有序数列合并
+			// 再将二个有序数列合并
 			mergeArray(data, fromIndex, middle, endIndex, tmpArray);
 		}
 	}
@@ -504,126 +504,232 @@ public class SortDemo {
 	}
 
 	private static int[] bucketSort(int[] data, int bucketCount) {
-		    //bucketCount 桶的个数，负数需要特别处理，比如专门申请一些桶，取绝对值放置
-			int len=data.length;
-	        int high =data[0];
-	        int low = data[0];
-	        //查找数组元素中最大值和最小值,进而确定数据的分布范围 O(n);
-	        // 不一定需要准确的区间，你也可以指定区间，不过这个区间要包含所有待排序的数据
-	        for (int i = 1; i < len; i++) {
-	            if (data[i] > high){
-	            	high = data[i];
-	            }
-	            if (data[i] < low){
-	            	low = data[i];
-	            }
-	        }
-	        
-	        //每个桶有多少个数据
-	        int bucketSize = (high - low + 1)/bucketCount;
-	        //桶
-	        List<Integer>[] buckets = new ArrayList[bucketSize];
-	        
-	        System.out.println("bucketSize="+bucketSize);
-	        //现在开始遍历元素，将每个元素分到该去的桶里
-	        for (int i = 0; i < len; i++) { 
-	        	//要放到那个位置的桶里
-	        	int bucketIndex=(data[i] - low) /bucketSize;
-	        	System.out.println(data[i]+"要放到： bucketIndex="+bucketIndex);
-	        	if (buckets[bucketIndex] == null) {
-	        		//初始化
-					buckets[bucketIndex]= new ArrayList<Integer>(bucketSize);
-				}
-	        	//放到这个桶里
-	        	buckets[bucketIndex].add(data[i]);
-	        }
-	        //已有序的元素
-	        int current=0;
-	        //现在我们开始按顺序遍历整个桶，并排序，
-	        for (int i = 0; i < buckets.length; i++) {
-				if (buckets[i] !=null) {
-					//说明桶里有元素，那我们开始排序,可以替换为快速排序等
-					Collections.sort(buckets[i]);
-					//排好序了。。把数据放回到原来的数组里（覆盖）
-					int bucketLen=buckets[i].size();
-					for (int j = 0; j < bucketLen; j++) {
-						data[current++]=buckets[i].get(j);
-					}
+		// bucketCount 桶的个数，负数需要特别处理，比如专门申请一些桶，取绝对值放置
+		int len = data.length;
+		int high = data[0];
+		int low = data[0];
+		// 查找数组元素中最大值和最小值,进而确定数据的分布范围 O(n);
+		// 不一定需要准确的区间，你也可以指定区间，不过这个区间要包含所有待排序的数据
+		for (int i = 1; i < len; i++) {
+			if (data[i] > high) {
+				high = data[i];
+			}
+			if (data[i] < low) {
+				low = data[i];
+			}
+		}
+
+		// 每个桶有多少个数据
+		int bucketSize = (high - low + 1) / bucketCount;
+		// 桶
+		List<Integer>[] buckets = new ArrayList[bucketSize];
+
+		System.out.println("bucketSize=" + bucketSize);
+		// 现在开始遍历元素，将每个元素分到该去的桶里
+		for (int i = 0; i < len; i++) {
+			// 要放到那个位置的桶里
+			int bucketIndex = (data[i] - low) / bucketSize;
+			System.out.println(data[i] + "要放到： bucketIndex=" + bucketIndex);
+			if (buckets[bucketIndex] == null) {
+				// 初始化
+				buckets[bucketIndex] = new ArrayList<Integer>(bucketSize);
+			}
+			// 放到这个桶里
+			buckets[bucketIndex].add(data[i]);
+		}
+		// 已有序的元素
+		int current = 0;
+		// 现在我们开始按顺序遍历整个桶，并排序，
+		for (int i = 0; i < buckets.length; i++) {
+			if (buckets[i] != null) {
+				// 说明桶里有元素，那我们开始排序,可以替换为快速排序等
+				Collections.sort(buckets[i]);
+				// 排好序了。。把数据放回到原来的数组里（覆盖）
+				int bucketLen = buckets[i].size();
+				for (int j = 0; j < bucketLen; j++) {
+					data[current++] = buckets[i].get(j);
 				}
 			}
-	        
-	        return data;
-	    }
+		}
 
-	  private static int[] radixSort(int[] data){
-		  	 int len=data.length;
-			 //数组中最大的元素
-			 int maxNum=data[0];
-			
-			 //先找到最大元素
-			  for (int i = 1; i < len; i++) {
-			     if (data[i] > maxNum) {
-				 maxNum=data[i];
-			     }
-		 	   }
-				
-			   //计算最大元素的位数，位数决定了比较的次数
-			   int numLen=1;
-			   while((maxNum=maxNum /10) !=0){
-				   numLen++;
-			   }
-			   
-			   //从低位到高位，根据每位数【个，十，百，千,....】的大小排序	   
-			   //数字范围为：【0，1，2，3，4，5，6，7，8，9】，使用10个桶，统计指定位digit出现的次数， 
-			   int[] buckets=new int[10];
+		return data;
+	}
 
-		           //临时数组，存放每趟排序后的数据
-			   int[] tmpArr=new int[len];
+	private static int[] radixSort(int[] data) {
+		int len = data.length;
+		// 数组中最大的元素
+		int maxNum = data[0];
 
-			   //外层循环取决于最大数字的位数
-			   for (int i = 0; i < numLen; i++) {
-
-				   //0表示没数据落进来
-				   //每轮循环时清空buckets的计数
-				   Arrays.fill(buckets, 0);
-				   
-				   //遍历每个数据，放到可以计数的桶里
-				   for (int j = 0; j < len; j++) {
-					   //算出指定数位的值digit
-					   int digit=(data[j]/ (int)Math.pow(10,i))%10;
-
-					   //累加digit所代表的数字的出现次数
-					   buckets[digit]++;
-				   }
-				   
-				   //将tmp中的位置依次分配给每个桶  
-
-				   // buckets[]数组中的digit出现的次数累加之和就是待排序数组元素的数量len
-				   // 即将data[0]+data[1]+...+data[9]= len
-				  for (int j = 1; j < buckets.length; j++) {
-					  //累计每个bucket[j]，统计bucket[j]代表的数组元素的个数
-					  //假如 digit=3,buckets[digit]=buckets[3]=7，那么说明待排序数组有7个元素，落在bucket[0,3]
-					  buckets[j] =buckets[j]+buckets[j-1];
-				  }
-				  
-				   //将所有桶中记录依次收集到tmp中
-				  for (int j =len-1 ; j >=0; j--) {
-					  //算出指定数位的值digit
-					   int digit=(data[j]/ (int)Math.pow(10,i))%10;
-
-					  //比如digit=3,而上一步我们计算得出bucket[digit]=bucket[3]=7,7个元素落在bucket[0,3]
-					  //那我们只需要将元素按顺序放置在临时数组的[0,7)之间，它们自然就是有序的
-					  tmpArr[buckets[digit] -1] = data[j];
-
-					  //将此digit位置的计数器减一，下一个相同的digit则放置在相邻的位置
-					  buckets[digit] --;
-				  }
-				  
-				 //此时元素已经按照digit排好序了，将临时数组复制到data中，
-				 System.arraycopy(tmpArr,0,data,0,len);;
-			   }
-
-			   return data;
+		// 先找到最大元素
+		for (int i = 1; i < len; i++) {
+			if (data[i] > maxNum) {
+				maxNum = data[i];
 			}
+		}
+
+		// 计算最大元素的位数，位数决定了比较的次数
+		int numLen = 1;
+		while ((maxNum = maxNum / 10) != 0) {
+			numLen++;
+		}
+
+		// 从低位到高位，根据每位数【个，十，百，千,....】的大小排序
+		// 数字范围为：【0，1，2，3，4，5，6，7，8，9】，使用10个桶，统计指定位digit出现的次数，
+		int[] buckets = new int[10];
+
+		// 临时数组，存放每趟排序后的数据
+		int[] tmpArr = new int[len];
+
+		// 外层循环取决于最大数字的位数
+		for (int i = 0; i < numLen; i++) {
+
+			// 0表示没数据落进来
+			// 每轮循环时清空buckets的计数
+			Arrays.fill(buckets, 0);
+
+			// 遍历每个数据，放到可以计数的桶里
+			for (int j = 0; j < len; j++) {
+				// 算出指定数位的值digit
+				int digit = (data[j] / (int) Math.pow(10, i)) % 10;
+
+				// 累加digit所代表的数字的出现次数
+				buckets[digit]++;
+			}
+
+			// 将tmp中的位置依次分配给每个桶
+
+			// buckets[]数组中的digit出现的次数累加之和就是待排序数组元素的数量len
+			// 即将data[0]+data[1]+...+data[9]= len
+			for (int j = 1; j < buckets.length; j++) {
+				// 累计每个bucket[j]，统计bucket[j]代表的数组元素的个数
+				// 假如 digit=3,buckets[digit]=buckets[3]=7，那么说明待排序数组有7个元素，落在bucket[0,3]
+				buckets[j] = buckets[j] + buckets[j - 1];
+			}
+
+			// 将所有桶中记录依次收集到tmp中
+			for (int j = len - 1; j >= 0; j--) {
+				// 算出指定数位的值digit
+				int digit = (data[j] / (int) Math.pow(10, i)) % 10;
+
+				// 比如digit=3,而上一步我们计算得出bucket[digit]=bucket[3]=7,7个元素落在bucket[0,3]
+				// 那我们只需要将元素按顺序放置在临时数组的[0,7)之间，它们自然就是有序的
+				tmpArr[buckets[digit] - 1] = data[j];
+
+				// 将此digit位置的计数器减一，下一个相同的digit则放置在相邻的位置
+				buckets[digit]--;
+			}
+
+			// 此时元素已经按照digit排好序了，将临时数组复制到data中，
+			System.arraycopy(tmpArr, 0, data, 0, len);;
+		}
+
+		return data;
+	}
+
+	private static int[] heapSort(int[] data) {
+		// 数据从0开始
+		int heapSize = data.length - 1;
+		// 先把数组构造成堆
+		buildHeap(data, heapSize);
+
+		// 对剩余的n-1个元素继续调整堆
+		int tmp;
+		for (int i = heapSize; i >= 1; i--) {
+			// 交换data[0]和data[i],data[0]为堆顶元素（最大/最小）
+			// 将堆顶和堆底元素交换【数组第一个元素和最后一个元素交换】
+			tmp = data[0];
+			data[0] = data[i];
+			data[i] = tmp;
+			// 除了堆顶元素，对剩余的元素继续构造最大或最小堆
+			heapSize--;
+			// heapifyV2(data, i, heapSize);
+			heapify(data, 0, heapSize);
+		}
+		return data;
+	}
+
+
+	private static void heapify(int[] data, int fromIndex, int heapSize) {
+		// 一个节点调整左右节点的过程，其余的递归调整
+		// 左节点 2i+1 ，因为算法运算符优先级高，记得加括号
+		int lnode = (fromIndex << 1) + 1;
+		// 右节点 2i+2
+		int rnode = (fromIndex << 1) + 2;
+
+		if (lnode > heapSize) {
+			return;
+		}
+
+		// 左右节点最大元素的索引，默认为左节点
+		int max = lnode;
+
+		// 比较左右节点的大小；
+		if (rnode <= heapSize && data[rnode] > data[lnode]) {
+			max = rnode;
+		}
+
+		// 将两节点中最小的元素和父节点（fromIndex)
+		// 如果子节点比父节点小，说明无须调整了。
+		if (data[max] > data[fromIndex]) {
+			// 交换位置
+			int tmp = data[max];
+			data[max] = data[fromIndex];
+			data[fromIndex] = tmp;
+
+			// 此时父节点被换到了max所代表的节点位置上，可能不满足最大堆的特性，递归调整
+			heapify(data, max, heapSize);
+		}
+	}
+
+
+	private static void heapifyV2(int[] data, int fromIndex, int heapSize) {
+		// 使用迭代调整堆元素 ，最大堆调整
+		int max, lnode, rnode, tmp;
+		while (true) {
+			// 左右节点中较小元素的索引，先默认为左节点
+			// 左节点 2i+1
+			max = lnode = (fromIndex << 1) + 1;
+			if (lnode > heapSize) {
+				return;
+			}
+			// 右节点 2i+2 ==lnode +1;
+			// rnode = fromIndex << 1 + 2;
+			rnode = lnode + 1;
+
+			// 在左右孩子中找最小的
+			if (rnode <= heapSize && data[rnode] > data[lnode]) {
+				// 如果右节点较小，则较小节点为右节点的索引
+				max = rnode;
+			}
+
+			// 将找到的两个节点较小的值和父节点(fromIndex)比较
+			if (data[max] <= data[fromIndex]) {
+				// 因为左右节点比父节点小，不用继续调整了
+				return;
+			}
+
+			// 将节点的值和父节点的值交换，
+			tmp = data[fromIndex];
+			data[fromIndex] = data[max];
+			data[max] = tmp;
+
+			// 此时父节点被换到了max所代表的节点位置上，可能不满足最大堆的特性，继续迭代
+			fromIndex = max;
+		}
+	}
+
+	private static void buildHeap(int[] data, int heapSize) {
+		// 先把数组调整成最大（小）堆
+		// 自下而上、从底部到顶，保证节点i之后｛子节点｝都满足最大或最小堆的定义
+
+		// 本示例为构造最大堆
+		// i为父节点,没有子节点的才需要创建最大堆，从最后一个的父节点开始
+		for (int i = (data.length - 1) >> 1; i >= 0; i--) {
+			// heapify(data, i, heapSize);
+			heapifyV2(data, i, heapSize);
+			System.out.println("buildHeap - after heapify:" + Arrays.toString(data));
+		}
+	}
+
 
 }
